@@ -10,5 +10,5 @@ ___
 
 ### Show you how it's work in the Terminal window
 
-![screencast](/home/nick/IdeaProjects/JavaMax/src/main/resources/ScreenMyChat.gif)
+![screencast](/src/main/resources/ScreenMyChat.gif)
 
