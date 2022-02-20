@@ -11,4 +11,6 @@ ___
 ### Show you how it's work in the Terminal window
 
 ![screencast](/src/main/resources/ScreenMyChat.gif)
+  
+  - I will add the .JAR file a little later
 
