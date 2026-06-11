@@ -4,14 +4,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ListDeserializer {
-    public List<Message> deserialize(String list) {
-        MessageDeserializer deserializer = new MessageDeserializer();
-        List<Message> listMessage = new ArrayList<>();
-        String[] arrMessage = list.split("\n");
+    private final MessageDeserializer messageDeserializer = new MessageDeserializer();
 
-        for (String s : arrMessage) {
-          listMessage.add(deserializer.deserialize(s));
+    public List<Message> deserialize(String wireLines) {
+        List<Message> messages = new ArrayList<>();
+        for (String line : wireLines.split("\n")) {
+            if (!line.isBlank()) {
+                messages.add(messageDeserializer.deserialize(line));
+            }
         }
-        return listMessage;
+        return messages;
     }
 }

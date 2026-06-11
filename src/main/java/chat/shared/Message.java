@@ -1,16 +1,8 @@
 package chat.shared;
 
 public class Message {
-    private String text;
-    private String sessionId;
-
-    @Override
-    public String toString() {
-        return "Message{" +
-                "text='" + text + '\'' +
-                ", sessionId='" + sessionId + '\'' +
-                '}';
-    }
+    private final String text;
+    private final String sessionId;
 
     public Message(String text, String sessionId) {
         this.text = text;
@@ -25,4 +17,3 @@ public class Message {
         return sessionId;
     }
 }
-

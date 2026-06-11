@@ -6,22 +6,22 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ArchiveMessage {
-    private final static ArchiveMessage INSTANCE = new ArchiveMessage();
-    private List<Message> messages;
+    private static final ArchiveMessage INSTANCE = new ArchiveMessage();
 
-    private ArchiveMessage(){
-        messages = new ArrayList<>();
+    private final List<Message> messages = new ArrayList<>();
+
+    private ArchiveMessage() {
     }
 
-    public void add(Message message){
+    public void add(Message message) {
         messages.add(message);
     }
 
-    public List<Message> getAll(){
-        return new ArrayList<>(messages); // Делаем так чтобы все явно использовали метод add / Cоздаем копию основного листа строк
+    public List<Message> getAll() {
+        return new ArrayList<>(messages);
     }
 
-    public static ArchiveMessage getArchiveMessage(){
+    public static ArchiveMessage getArchiveMessage() {
         return INSTANCE;
     }
 }
