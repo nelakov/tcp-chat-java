@@ -13,11 +13,15 @@ public class Server {
     private static final int PORT = 6666;
 
     static void main(String[] args) throws IOException {
-        CommandProcessor commandProcessor = new CommandProcessor();
         try (var serverSocket = new ServerSocket(PORT)) {
-            while (true) {
-                handleClient(serverSocket.accept(), commandProcessor);
-            }
+            serve(serverSocket);
+        }
+    }
+
+    static void serve(ServerSocket serverSocket) throws IOException {
+        CommandProcessor commandProcessor = new CommandProcessor();
+        while (true) {
+            handleClient(serverSocket.accept(), commandProcessor);
         }
     }
 

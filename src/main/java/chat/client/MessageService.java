@@ -16,6 +16,18 @@ public class MessageService {
     private static final String SERVER_HOST = "127.0.0.1";
     private static final int SERVER_PORT = 6666;
 
+    private final String serverHost;
+    private final int serverPort;
+
+    public MessageService() {
+        this(SERVER_HOST, SERVER_PORT);
+    }
+
+    MessageService(String serverHost, int serverPort) {
+        this.serverHost = serverHost;
+        this.serverPort = serverPort;
+    }
+
     public void saveToServer(Message message) throws IOException, MessageNotDeliveredException {
         String request = Protocol.CMD_MESSAGE + ";" + Protocol.serialize(message);
         String response = exchange(request).strip();
@@ -30,7 +42,7 @@ public class MessageService {
     }
 
     private String exchange(String request) throws IOException {
-        try (var socket = new Socket(SERVER_HOST, SERVER_PORT);
+        try (var socket = new Socket(serverHost, serverPort);
              var out = new PrintWriter(new OutputStreamWriter(socket.getOutputStream(), StandardCharsets.UTF_8), true);
              var in = new BufferedReader(new InputStreamReader(socket.getInputStream(), StandardCharsets.UTF_8))) {
             out.println(request);
