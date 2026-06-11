@@ -12,7 +12,7 @@ import java.nio.charset.StandardCharsets;
 public class Server {
     private static final int PORT = 6666;
 
-    public static void main(String[] args) throws IOException {
+    static void main(String[] args) throws IOException {
         CommandProcessor commandProcessor = new CommandProcessor();
         try (var serverSocket = new ServerSocket(PORT)) {
             while (true) {

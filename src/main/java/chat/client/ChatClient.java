@@ -9,7 +9,7 @@ import java.util.UUID;
 public class ChatClient {
     private static final long POLL_INTERVAL_MILLIS = 1000;
 
-    public static void main(String[] args) throws InterruptedException {
+    static void main(String[] args) throws InterruptedException {
         String sessionId = UUID.randomUUID().toString();
         MessageService messageService = new MessageService();
 
