@@ -1,22 +1,23 @@
 package chat.server;
 
 import chat.shared.ListSerializer;
-import chat.shared.Message;
-
-import java.util.List;
+import chat.shared.MessageDeserializer;
+import chat.shared.Protocol;
 
 public class CommandProcessor {
-    ArchiveMessage archive = ArchiveMessage.getArchiveMessage();
+    private final ArchiveMessage archive = ArchiveMessage.getArchiveMessage();
+    private final MessageDeserializer messageDeserializer = new MessageDeserializer();
 
-    public String process(Message command) {
-        if (command.getText().equals("0")) {
-            List<Message> getAll = archive.getAll();
-            System.out.println("Command processed 0 has been done");
-            return ListSerializer.serializer(getAll);
-        } else {
-            archive.add(command);
-            System.out.println("Command processed saveToServer has been done");
-            return "Доставлено";
+    public String process(String request) {
+        String[] parts = request.split(";", 2);
+        String command = parts[0];
+        if (Protocol.CMD_FETCH_ALL.equals(command)) {
+            return ListSerializer.serialize(archive.getAll());
         }
+        if (Protocol.CMD_MESSAGE.equals(command) && parts.length == 2) {
+            archive.add(messageDeserializer.deserialize(parts[1]));
+            return Protocol.ACK_DELIVERED;
+        }
+        throw new IllegalArgumentException("unknown command: " + command);
     }
 }
