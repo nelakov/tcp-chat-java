@@ -34,8 +34,8 @@ public class ChatClient {
     private static int printNewForeignMessages(List<Message> allMessages, int alreadyPrinted, String ownSessionId) {
         for (int i = alreadyPrinted; i < allMessages.size(); i++) {
             Message message = allMessages.get(i);
-            if (!message.getSessionId().equals(ownSessionId)) {
-                System.out.println(message.getText());
+            if (!message.sessionId().equals(ownSessionId)) {
+                System.out.println(message.text());
             }
         }
         return allMessages.size();

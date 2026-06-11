@@ -27,7 +27,7 @@ public class UserInputMessageProcessor implements Runnable {
         try {
             messageService.saveToServer(message);
         } catch (IOException | MessageNotDeliveredException e) {
-            System.err.println("message not delivered: '" + message.getText() + "' (" + e.getMessage() + ")");
+            System.err.println("message not delivered: '" + message.text() + "' (" + e.getMessage() + ")");
         }
     }
 }
