@@ -3,31 +3,41 @@ package chat.client;
 import chat.shared.Message;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 public class ChatClient {
-    public static List<Message> printedMessage = new ArrayList<>();
-    public static String sessionId = UUID.randomUUID().toString();
+    private static final long POLL_INTERVAL_MILLIS = 1000;
 
-    public static void main(String[] args) throws InterruptedException, IOException {
+    static void main(String[] args) throws InterruptedException {
+        String sessionId = UUID.randomUUID().toString();
         MessageService messageService = new MessageService();
-        Runnable runnable = new UserInputMessageProcessor();
 
-        Thread thread = new Thread(runnable);
-        thread.start();
+        new Thread(new UserInputMessageProcessor(messageService, sessionId)).start();
+        pollAndPrintForeignMessages(messageService, sessionId);
+    }
 
+    private static void pollAndPrintForeignMessages(MessageService messageService, String ownSessionId)
+            throws InterruptedException {
+        int printedCount = 0;
         while (true) {
-            List<Message> allMessages = messageService.getAllMessages();
-            int n = printedMessage.size();
-                for (int i = n; i < allMessages.size(); i++) {
-                    if (!allMessages.get(i).getSessionId().equals(ChatClient.sessionId)) {
-                        System.out.println(allMessages.get(i).getText());
-                    }
-               }
-            printedMessage = allMessages;
-            Thread.sleep(1000);
+            try {
+                List<Message> allMessages = messageService.getAllMessages();
+                printedCount = printNewForeignMessages(allMessages, printedCount, ownSessionId);
+            } catch (IOException e) {
+                System.err.println("polling failed, will retry: " + e.getMessage());
+            }
+            Thread.sleep(POLL_INTERVAL_MILLIS);
         }
+    }
+
+    static int printNewForeignMessages(List<Message> allMessages, int alreadyPrinted, String ownSessionId) {
+        for (int i = alreadyPrinted; i < allMessages.size(); i++) {
+            Message message = allMessages.get(i);
+            if (!message.sessionId().equals(ownSessionId)) {
+                System.out.println(message.text());
+            }
+        }
+        return allMessages.size();
     }
 }
