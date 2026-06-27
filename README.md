@@ -1,6 +1,6 @@
 # network-chat
 
-A multi-client TCP chat in plain Java — no frameworks, no external runtime dependencies.
+A multi-client TCP chat in plain Java. No frameworks, no external runtime dependencies.
 A learning project focused on sockets, wire protocols, and threads, kept deliberately small
 enough to read in one sitting.
 
@@ -37,14 +37,14 @@ Requires JDK 25+ and Maven.
 ```bash
 mvn clean package
 
-# Terminal 1 — server
+# Terminal 1: server
 java -cp target/network-chat-1.0-SNAPSHOT.jar chat.server.Server
 
-# Terminals 2..N — one per chat participant
+# Terminals 2..N: one per chat participant
 java -cp target/network-chat-1.0-SNAPSHOT.jar chat.client.ChatClient
 ```
 
-Type a line, hit Enter — everyone else sees it within a second.
+Type a line, hit Enter, and everyone else sees it within a second.
 
 ## Wire protocol
 
@@ -61,7 +61,7 @@ Design notes:
 - **`sessionId` comes first** in a message line. It is a UUID and can never contain `;`,
   so combined with `split(";", 2)` the text keeps every semicolon the user typed.
 - **Commands are out-of-band.** The command token is a dedicated field, never the user's
-  text — typing `GET`, `MSG` or `0` in chat is just a message.
+  text, so typing `GET`, `MSG` or `0` in chat is just a message.
 - **Malformed input never kills the server.** A null or garbage line fails one
   connection with a logged `IllegalArgumentException`; the accept loop keeps serving.
 
@@ -84,7 +84,7 @@ src/main/java/chat/
 ```
 
 **Threading.** The server is single-threaded: one client served at a time, blocking I/O.
-The client runs two threads — main polls the server, a worker reads stdin. They share no
+The client runs two threads: main polls the server, a worker reads stdin. They share no
 mutable state: the session id is injected via constructors, the poll cursor is a local `int`.
 
 **Error handling.** The server treats every connection as disposable (per-connection
@@ -100,7 +100,7 @@ mvn test -Dtest=ProtocolTest#roundTripPreservesTextWithSemicolons
 ```
 
 JUnit 6. The suite pins the wire format (round-trips, field order, malformed-input
-rejection) and command dispatch — the contract both sides depend on. Protocol tests are
+rejection) and command dispatch, the contract both sides depend on. Protocol tests are
 characterization tests: any format change must consciously update them.
 
 ## Design decisions & intentional simplifications
@@ -109,9 +109,9 @@ This is a learning project; some choices trade robustness for readability on pur
 
 | Decision | Why |
 |---|---|
-| Single-threaded blocking server | The point is sockets and protocol, not concurrency. One slow client stalls the rest — known and accepted. |
+| Single-threaded blocking server | The point is sockets and protocol, not concurrency. One slow client stalls the rest, known and accepted. |
 | Polling instead of push | Keeps the client trivial: no persistent connections, no server-side client registry. Costs ~1s latency and O(archive) traffic per poll. |
-| In-memory singleton store | No persistence by design; history dies with the server process. Unsynchronized — safe while the server is single-threaded. |
+| In-memory singleton store | No persistence by design; history dies with the server process. Unsynchronized, safe while the server is single-threaded. |
 | Hardcoded `127.0.0.1:6666` | Local demo scope; both values are named constants (`Server.PORT`, `MessageService.SERVER_*`). |
 
 Natural next steps if this ever grows up: virtual-thread-per-connection server,
@@ -121,4 +121,4 @@ and a `SessionId` domain type once it has validation behavior to carry.
 ## Project conventions
 
 - Wire format changes happen in exactly one file (`Protocol.java`) plus its test.
-- Generated artifacts (`target/`) are historical baggage in git — never stage their changes.
+- Generated artifacts (`target/`) are historical baggage in git, never stage their changes.
